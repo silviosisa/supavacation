@@ -1,10 +1,13 @@
-import '../styles/globals.css';
-import { Toaster } from 'react-hot-toast';
+import "../styles/globals.css";
+import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <Component {...pageProps} />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
       <Toaster />
     </>
   );
