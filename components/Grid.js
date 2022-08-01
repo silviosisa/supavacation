@@ -1,11 +1,18 @@
-import PropTypes from 'prop-types';
-import Card from '@/components/Card';
-import { ExclamationIcon } from '@heroicons/react/outline';
+import PropTypes from "prop-types";
+import Card from "@/components/Card";
+import { ExclamationIcon } from "@heroicons/react/outline";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Grid = ({ homes = [] }) => {
   const isEmpty = homes.length === 0;
 
-  const toggleFavorite = async id => {
+  const toggleFavorite = async (id) => {
+    console.log("id", id);
+    let toastId;
+    toastId = toast.loading("plus id..");
+    await axios.put(`/api/${id}/favorites`);
+    toast.success("Successfully deleted", { id: toastId });
     // TODO: Add/remove home from the authenticated user's favorites
   };
 
@@ -16,7 +23,7 @@ const Grid = ({ homes = [] }) => {
     </p>
   ) : (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {homes.map(home => (
+      {homes.map((home) => (
         <Card key={home.id} {...home} onClickFavorite={toggleFavorite} />
       ))}
     </div>

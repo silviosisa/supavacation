@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   listedHomes   Home[]
+  favoriteHomes Home[]    @relation("favorites")
 }
 
 // schema.prisma
@@ -35,6 +36,7 @@ model Home {
   updatedAt   DateTime @updatedAt
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id])
+  users       User[]   @relation(name: "favorites")
 }
 
 model Car {

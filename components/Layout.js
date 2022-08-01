@@ -42,8 +42,6 @@ const menuItems = [
 
 const Layout = ({ children = null }) => {
   const { data: session, status } = useSession();
-  console.log(session);
-  console.log(status);
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);

@@ -17,7 +17,6 @@ export default async function handler(req, res) {
       const user = await prisma.user.findUnique({
         where: { email: session.user.email },
       });
-      console.log(user);
       const home = await prisma.home.create({
         data: {
           image,
