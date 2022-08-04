@@ -33,7 +33,7 @@ const Card = ({
           onClick={(e) => {
             e.preventDefault();
             if (typeof onClickFavorite === "function") {
-              onClickFavorite(id);
+              onClickFavorite(id, favorite);
             }
           }}
           className="absolute top-2 right-2"

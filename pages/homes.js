@@ -20,11 +20,27 @@ export async function getServerSideProps(context) {
   const homes = await prisma.home.findMany({
     where: { owner: { email: session.user.email } },
     orderBy: { createdAt: "desc" },
+    include: {
+      users: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+    },
   });
+
+  const addLike = homes.map((home) => ({
+    ...home,
+    favorite: home.users.some((user) => user.email === session.user.email),
+  }));
+
+  console.log(addLike);
+
   // Pass the data to the Homes component
   return {
     props: {
-      homes: JSON.parse(JSON.stringify(homes)),
+      homes: JSON.parse(JSON.stringify(addLike)),
     },
   };
 }

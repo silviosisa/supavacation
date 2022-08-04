@@ -1,17 +1,43 @@
 import Layout from "@/components/Layout";
 import Grid from "@/components/Grid";
 import { PrismaClient } from "@prisma/client";
+import { getSession } from "next-auth/react";
 
 // Instantiate it
 const prisma = new PrismaClient();
 
-export async function getServerSideProps() {
-  const homes = await prisma.home.findMany();
-  return {
-    props: {
-      homes: JSON.parse(JSON.stringify(homes)),
-    },
-  };
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  let homes;
+  if (!session) {
+    homes = await prisma.home.findMany();
+    return {
+      props: {
+        homes: JSON.parse(JSON.stringify(homes)),
+      },
+    };
+  } else {
+    homes = await prisma.home.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
+      },
+    });
+    const addLike = homes.map((home) => ({
+      ...home,
+      favorite: home.users.some((user) => user.email === session.user.email),
+    }));
+    return {
+      props: {
+        homes: JSON.parse(JSON.stringify(addLike)),
+      },
+    };
+  }
 }
 
 export default function Home({ homes = [] }) {

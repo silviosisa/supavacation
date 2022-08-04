@@ -3,17 +3,26 @@ import Card from "@/components/Card";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 const Grid = ({ homes = [] }) => {
+  const router = useRouter();
   const isEmpty = homes.length === 0;
 
-  const toggleFavorite = async (id) => {
-    console.log("id", id);
+  const toggleFavorite = async (id, favorite) => {
     let toastId;
-    toastId = toast.loading("plus id..");
-    await axios.put(`/api/${id}/favorites`);
-    toast.success("Successfully deleted", { id: toastId });
-    // TODO: Add/remove home from the authenticated user's favorites
+    if (favorite) {
+      toastId = toast.loading("deleting");
+      await axios.delete(`/api/${id}/favorites`);
+      toast.success("Successfully deleted", { id: toastId });
+      router.push("/");
+    } else {
+      toastId = toast.loading("Adding to favorites");
+      await axios.delete(`/api/${id}/favorites`);
+      toast.success("Successfully Added to favorites", { id: toastId });
+      router.push("/favorites");
+      await axios.put(`/api/${id}/favorites`);
+    }
   };
 
   return isEmpty ? (
